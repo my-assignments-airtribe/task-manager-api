@@ -2,13 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-// middleware
+
 const validateTaskInput  = require('./helpers/validate');
 // In Memory Database
 let tasks = require('./tasks');
 const app = express();
 const port = 3000;
 
+// middleware
 app.use(bodyParser.json());
 
 
