@@ -17,7 +17,6 @@ A simple RESTful API for managing tasks built with Node.js and Express.
   - [Delete a Task](#delete-a-task)
   - [Get Tasks by Priority](#get-tasks-by-priority)
 - [Usage](#usage)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Introduction
@@ -77,44 +76,60 @@ This Task Manager API allows users to perform CRUD operations (Create, Read, Upd
 
 ### Create a Task
 
-URL: /tasks
-Method: POST
-Request Body:
-title (string, required): Task title.
-description (string, required): Task description.
-completed (boolean): Task completion status (default is false).
-priority (string): Task priority level (e.g., 'low', 'medium', 'high').
+- **URL:** `/tasks`
+- **Method:** `POST`
+- **Request Body:**
+  - `title` (string, required): Task title.
+  - `description` (string, required): Task description.
+  - `completed` (boolean): Task completion status (default is `false`).
+  - `priority` (string): Task priority level (e.g., 'low', 'medium', 'high').
+  ```bash
+  curl -X POST -H "Content-Type: application/json" -d '{"title": "Task 1", "description": "Description 1" }' http://localhost:3000/tasks
+  ```
+
 
 ### Get All Tasks
-URL: /tasks
-Method: GET
+- **URL:** `/tasks`
+- **Method:** `GET`
+- **Query Parameters:**
+  - `completed` (boolean): Filter tasks by completion status (e.g., `completed=true`).
+  - `sortBy` (string): Sort tasks by creation date (e.g., `sortBy=createdAt:desc`).
+  ```bash
+  curl -X GET http://localhost:3000/tasks?completed=true&sort=createdAt&order=desc
+  ```
 
 ### Get a Task by ID
-URL: /tasks/:taskId
-Method: GET
+- **URL:** `/tasks/:taskId`
+- **Method:** `GET`
+- **URL Parameters:**
+  - `taskId` (string, required): Task ID.
+  ```bash
+  curl -X GET http://localhost:3000/tasks/1
+  ```
 
 ### Update a Task
-URL: /tasks/:taskId
-Method: PUT
-Request Body:
-title (string): New task title.
-description (string): New task description.
-completed (boolean, required): New task completion status.
-priority (string): New task priority level (e.g., 'low', 'medium', 'high').
-Delete a Task
-URL: /tasks/:taskId
-Method: DELETE
-Get Tasks by Priority
-URL: /tasks/priority/:level
-Method: GET
-URL Parameters:
-level (string, required): Priority level (e.g., 'low', 'medium', 'high').
+- **URL:** `/tasks/:taskId`
+- **Method:** `PUT`
+- **URL Parameters:**
+  - `taskId` (string, required): Task ID.
+- **Request Body:**
+  - `title` (string): Task title.
+  - `description` (string): Task description.
+  - `completed` (boolean): Task completion status.
+  - `priority` (string): Task priority level (e.g., 'low', 'medium', 'high').
+  ```bash
+  curl -X PUT -H "Content-Type: application/json" -d '{"title": "Updated Task 1", "Updated description": "Description 1" }' http://localhost:3000/tasks/1
+  ```
 
 ## Usage
-Use an API client (e.g., Postman or curl) to interact with the endpoints.
-Create, read, update, and delete tasks as needed.
-Filter and sort tasks using query parameters for better organization.
-Retrieve tasks by priority level to focus on important tasks.
+
+To interact with the Task Manager API, follow these steps:
+
+1. Use an API client (e.g., Postman or `curl`) to send HTTP requests to the API endpoints.
+2. Create, read, update, and delete tasks as needed using the appropriate HTTP methods and endpoints.
+3. Use query parameters to filter and sort tasks for better organization.
+4. Retrieve tasks by priority level to focus on important tasks.
+
 
 ## License
 This project is licensed under the MIT License.
