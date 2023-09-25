@@ -4,7 +4,7 @@ function validateTaskInput(req, res, next) {
   if (req.method === 'POST') {
     // Check for required fields during task creation
     if (!title || typeof title !== 'string') {
-      return res.status(400).json({ error: 'Title must be a non-empty string' });
+      return res.status(400).json({ error: 'Title must be a string' });
     }
 
     if (!description || typeof description !== 'string') {
