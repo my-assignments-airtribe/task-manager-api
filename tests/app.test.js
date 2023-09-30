@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../src/app');
 let tasks = require('../src/tasks');
+const {v4: uuidv4} = require('uuid');
 
 const expect = chai.expect;
 
@@ -25,10 +26,12 @@ describe('Task Manager API', () => {
     });
   });
 
+  const firstId = uuidv4();
+
 
   const initialTasks = [
     {
-      id: 1,
+      id: firstId,
       title: 'Task 1',
       description: 'Description 1',
       completed: false,
@@ -47,7 +50,7 @@ describe('Task Manager API', () => {
   it('should return all tasks', (done) => {
     chai
       .request(app)
-      .get('/tasks')
+      .get('/api/tasks')
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
@@ -59,10 +62,10 @@ describe('Task Manager API', () => {
   });
 
   it('should return a task if correct id is provided', (done) => {
-    const taskId = 1;
+    const taskId = firstId
     chai
       .request(app)
-      .get(`/tasks/${taskId}`)
+      .get(`/api/tasks/${taskId}`)
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
@@ -75,7 +78,7 @@ describe('Task Manager API', () => {
     const taskId = 999;
     chai
       .request(app)
-      .get(`/tasks/${taskId}`)
+      .get(`/api/tasks/${taskId}`)
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body).to.be.an('object');
@@ -84,33 +87,21 @@ describe('Task Manager API', () => {
       });
   });
 
-  it('should return an error if id is not a number', (done) => {
-    const taskId = 'abc';
-    chai
-      .request(app)
-      .get(`/tasks/${taskId}`)
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body).to.be.an('object');
-        expect(res.body.error).to.equal('Invalid Id');
-        done();
-      });
-  });
-
-  it('should return an error if no task is available', (done) => {
+  it('should return no tasks found if no tasks', (done) => {
     tasks.length = 0;
     chai
       .request(app)
-      .get('/tasks')
+      .get('/api/tasks')
       .end((err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body.error).to.equal('No tasks available, Consider adding a task');
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equal('No tasks found');
         done();
       });
   });
 
   it('should create a new task if all inputs are provided correctly', (done) => {
     const newTask = {
+      id: uuidv4(),
       title: 'New Task',
       description: 'New Description',
       completed: false,
@@ -118,7 +109,7 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .post('/tasks')
+      .post('/api/tasks')
       .send(newTask)
       .end((err, res) => {
         expect(res).to.have.status(201);
@@ -135,11 +126,13 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .post('/tasks')
+      .post('/api/tasks')
       .send(newTask)
       .end((err, res) => {
         expect(res).to.have.status(400);
-        expect(res.body.error).to.equal('Title must be a string');
+        expect(res.body.errors.length).to.equal(2);
+        expect(res.body.errors[0].msg).to.equal('Title must be a string');
+        expect(res.body.errors[1].msg).to.equal('Title cannot be empty');
         done();
       });
   });
@@ -152,11 +145,13 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .post('/tasks')
+      .post('/api/tasks')
       .send(newTask)
       .end((err, res) => {
         expect(res).to.have.status(400);
-        expect(res.body.error).to.equal('Description must be a string');
+        expect(res.body.errors.length).to.equal(2);
+        expect(res.body.errors[0].msg).to.equal('Description must be a string');
+        expect(res.body.errors[1].msg).to.equal('Description cannot be empty');
         done();
       });
   });
@@ -170,35 +165,17 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .post('/tasks')
+      .post('/api/tasks')
       .send(newTask)
       .end((err, res) => {
         expect(res).to.have.status(400);
-        expect(res.body.error).to.equal('Priority must be low, medium, or high');
-        done();
-      });
-  });
-
-  it('should return an error if completed is not false', (done) => {
-    const newTask = {
-      title: 'New Task',
-      description: 'New Description',
-      completed: true,
-      priority: 'low',
-    };
-    chai
-      .request(app)
-      .post('/tasks')
-      .send(newTask)
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.error).to.equal('Completed must be false during creation');
+        expect(res.body.errors[0].msg).to.equal('Priority must be low, medium, or high');
         done();
       });
   });
 
   it('should update a task if all inputs are provided correctly', (done) => {
-    const taskId = 1;
+    const taskId = firstId;
     const updatedTask = {
       title: 'Updated Task',
       description: 'Updated Description',
@@ -207,7 +184,7 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .put(`/tasks/${taskId}`)
+      .put(`/api/tasks/${taskId}`)
       .send(updatedTask)
       .end((err, res) => {
         expect(res).to.have.status(201);
@@ -226,7 +203,7 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .put(`/tasks/${taskId}`)
+      .put(`/api/tasks/${taskId}`)
       .send(updatedTask)
       .end((err, res) => {
         expect(res).to.have.status(404);
@@ -245,7 +222,7 @@ describe('Task Manager API', () => {
     };
     chai
       .request(app)
-      .put(`/tasks/${taskId}`)
+      .put(`/api/tasks/${taskId}`)
       .send(updatedTask)
       .end((err, res) => {
         expect(res).to.have.status(404);
@@ -255,10 +232,10 @@ describe('Task Manager API', () => {
   });
 
   it('should delete a task if task id is found', (done) => {
-    const taskId = 1;
+    const taskId = firstId;
     chai
       .request(app)
-      .delete(`/tasks/${taskId}`)
+      .delete(`/api/tasks/${taskId}`)
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body.message).to.equal('Task deleted successfully');
@@ -270,7 +247,7 @@ describe('Task Manager API', () => {
     const taskId = 999;
     chai
       .request(app)
-      .delete(`/tasks/${taskId}`)
+      .delete(`/api/tasks/${taskId}`)
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body.error).to.equal('Task not found');

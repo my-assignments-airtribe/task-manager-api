@@ -23,7 +23,7 @@ const taskValidationMiddleware = [
     .isBoolean().withMessage('Completed must be a boolean value'),
   body('priority')
     .optional()
-    .isIn(['low', 'medium', 'high']).withMessage('Invalid priority level'),
+    .isIn(['low', 'medium', 'high']).withMessage('Priority must be low, medium, or high'),
 ];
 
 // Validation middleware for updating a task
@@ -34,7 +34,7 @@ const updateTaskValidationMiddleware = [
   body('priority')
     .optional()
     .isIn(['low', 'medium', 'high'])
-    .withMessage('Invalid priority level'),
+    .withMessage('Priority must be low, medium, or high'),
 ];
 
 const priorityLevels = ['low', 'medium', 'high'];
@@ -43,7 +43,7 @@ const priorityValidationMiddleware = (req, res, next) => {
   if (priorityLevels.includes(req.params.level)) {
     return next();
   }
-  return res.status(400).json({ error: 'Invalid priority level' });
+  return res.status(400).json({ error: 'Priority must be low, medium, or high' });
 }
 
 
