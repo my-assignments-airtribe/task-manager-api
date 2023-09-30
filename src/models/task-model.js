@@ -4,8 +4,8 @@ class Task {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.completed = completed;
-    this.priority = priority;
+    this.completed = completed || false;
+    this.priority = priority || 'low';
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
