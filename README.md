@@ -45,31 +45,37 @@ This Task Manager API allows users to perform CRUD operations (Create, Read, Upd
 1. Clone the repository or download the source code:
 
    ```bash
-   git clone https://github.com/my-assignments-airtribe/task-manager-api.git
+    `git clone https://github.com/my-assignments-airtribe/task-manager-api.git`
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd task-manager-api
+    `cd task-manager-api`
    ```
 3. Install dependencies:
 
    ```bash
-   yarn install
+    `yarn install`
    ```
     or
     ```bash
-    npm install
+    `npm install`
     ```
 4. Start the server:
 
    ```bash
-   yarn start
+   `yarn start`
    ```
     or
     ```bash
-    npm start
+    `npm start`
+    ```
+5. To test the API:
+    This will run the basic unit tests on the api.
+
+    ```bash
+    `yarn test`
     ```
 
 ## API Endpoints
