@@ -45,70 +45,79 @@ This Task Manager API allows users to perform CRUD operations (Create, Read, Upd
 1. Clone the repository or download the source code:
 
    ```bash
-   git clone https://github.com/my-assignments-airtribe/task-manager-api.git
+    `git clone https://github.com/my-assignments-airtribe/task-manager-api.git`
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd task-manager-api
+    `cd task-manager-api`
    ```
 3. Install dependencies:
 
    ```bash
-   yarn install
+    `yarn install`
    ```
     or
     ```bash
-    npm install
+    `npm install`
     ```
 4. Start the server:
 
    ```bash
-   yarn start
+   `yarn start`
    ```
     or
     ```bash
-    npm start
+    `npm start`
+    ```
+5. To test the API:
+    This will run the basic unit tests on the api.
+
+    ```bash
+    `yarn test`
     ```
 
 ## API Endpoints
 
 ### Create a Task
 
-- **URL:** `/tasks`
+- **URL:** `/api/tasks`
 - **Method:** `POST`
 - **Request Body:**
   - `title` (string, required): Task title.
   - `description` (string, required): Task description.
   - `completed` (boolean): Task completion status (default is `false`).
   - `priority` (string): Task priority level (e.g., 'low', 'medium', 'high').
+
   ```bash
-  curl -X POST -H "Content-Type: application/json" -d '{"title": "Task 1", "description": "Description 1" }' http://localhost:3000/tasks
+  curl -X POST -H "Content-Type: application/json" -d '{"title": "Task 1", "description": "Description 1" }' http://localhost:3000/api/tasks
   ```
 
 
 ### Get All Tasks
-- **URL:** `/tasks`
+- **URL:** `/api/tasks`
 - **Method:** `GET`
 - **Query Parameters:**
   - `completed` (boolean): Filter tasks by completion status (e.g., `completed=true`).
   - `sortBy` (string): Sort tasks by creation date (e.g., `sortBy=createdAt:desc`).
+
   ```bash
-  curl -X GET http://localhost:3000/tasks?completed=true&sort=createdAt&order=desc
+  curl -X GET http://localhost:3000/api/tasks?completed=true&sort=createdAt&order=desc
   ```
 
 ### Get a Task by ID
-- **URL:** `/tasks/:taskId`
+- **URL:** `/api/tasks/:taskId`
 - **Method:** `GET`
 - **URL Parameters:**
   - `taskId` (string, required): Task ID.
+
   ```bash
-  curl -X GET http://localhost:3000/tasks/1
+  curl -X GET http://localhost:3000/api/tasks/{uuid}
   ```
 
 ### Update a Task
-- **URL:** `/tasks/:taskId`
+- **URL:** `/api/tasks/:taskId`
 - **Method:** `PUT`
 - **URL Parameters:**
   - `taskId` (string, required): Task ID.
@@ -117,8 +126,19 @@ This Task Manager API allows users to perform CRUD operations (Create, Read, Upd
   - `description` (string): Task description.
   - `completed` (boolean): Task completion status.
   - `priority` (string): Task priority level (e.g., 'low', 'medium', 'high').
+
   ```bash
-  curl -X PUT -H "Content-Type: application/json" -d '{"title": "Updated Task 1", "Updated description": "Description 1" }' http://localhost:3000/tasks/1
+  curl -X PUT -H "Content-Type: application/json" -d '{"title": "Updated Task 1", "Updated description": "Description 1" }' http://localhost:3000/api/tasks/{uuid}
+  ```
+
+### Delete a Task
+- **URL:** `/api/tasks/:taskId`
+- **Method:** `DELETE`
+- **URL Parameters:**
+  - `taskId` (string, required): Task ID.
+
+  ```bash
+  curl -X DELETE http://localhost:3000/api/tasks/{uuid}
   ```
 
 ## Usage
